@@ -37,7 +37,7 @@ class App extends Component {
       unit: 1,
       value: null
     })
-    message.success(<React.Fragment><b>{newItem.description }</b> cargado correctamente. Total: <b>$ {newItem.unit * newItem.value}</b> </React.Fragment>, 5);
+    message.success(<React.Fragment><b>{newItem.description }</b> cargado correctamente. Total: <b>$ {newItem.unit * newItem.value}</b> </React.Fragment>, 3);
   }
 
   onChangeUnit(e) {
@@ -104,7 +104,7 @@ class App extends Component {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" icon="shopping-cart" onClick={this.onAddElement}>
+            <Button type="primary" icon="shopping-cart" onClick={this.onAddElement} disabled={!this.state.description}>
               Agregar
           </Button>
           </Form.Item>
