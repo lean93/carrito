@@ -1,26 +1,114 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import { Form, Icon, Input, Button, InputNumber, Table } from 'antd';
+import NumericInput from './NumericInput';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const Column = Table.Column;
+
+class App extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      description: "",
+      unit: 1,
+      value: null,
+      cartList:[]
+    }
+    this.onChangeUnit = this.onChangeUnit.bind(this);
+    this.onChangeValue = this.onChangeValue.bind(this);
+    this.onAddElement = this.onAddElement.bind(this);
+    this.onChangeDescription = this.onChangeDescription.bind(this);
+  }
+
+  onAddElement(){
+    const newItem={
+      description:this.state.description,
+      unit: this.state.unit,
+      value: this.state.value
+    }
+    let newCart = this.state.cartList.slice();
+    newCart.push(newItem)
+    this.setState({
+      cartList:newCart
+    })
+  }
+
+  onChangeUnit(e) {
+    this.setState({
+      unit: e
+    })
+  }
+  onChangeValue(e) {
+    this.setState({
+      value: e
+    })
+  }
+  onChangeDescription(e){
+    this.setState({
+      description: e.target.value
+    })
+  }
+
+  render() {
+    let mensaje = "Todavia no ha cargado nigun valor";
+    if(this.state.cartList.length){
+      const toal = this.state.cartList.map(item=> item.unit * item.value).reduce((firstValue ,secondValue)=> firstValue + secondValue);
+      mensaje = "Gasto Total: $" + toal;
+    }
+    return (
+      <div className="App">
+      <React.Fragment>
+        <Form layout="inline">
+          <Form.Item>
+            <Input
+              prefix={<Icon type="barcode" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="Ingrese Descripcion"
+              onChange={this.onChangeDescription}
+              value={this.state.description}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <NumericInput value={this.state.unit}
+              onChange={this.onChangeUnit}
+              prefix={<Icon type="number" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="Cantidad"
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <InputNumber
+              defaultValue={this.state.value}
+              placeholder="Precio"
+              formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={value => value.replace(/\$\s?|(,*)/g, '')}
+              onChange={this.onChangeValue}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" icon="shopping-cart" onClick={this.onAddElement}>
+              Agregar
+          </Button>
+          </Form.Item>
+        </Form>
+        <br/>
+        <b> {mensaje}</b>
+        <br/>
+        <br/>
+        <Table dataSource={this.state.cartList} pagination={true} size='small' bordered={true} >
+            <Column align='center' key='description' title='Descripcion' dataIndex='description' />
+            <Column align='center' key='unit' title='Cantidad' dataIndex='unit' />
+            <Column align='center' key='value' title='Precio Unitario' dataIndex='value' />
+            <Column align='center' key='value' title='Total Item' render={data=>{
+              return data.unit * data.value
+            }}/>
+        </Table>
+
+        </React.Fragment>
+      </div>
+    );
+  }
 }
-
 export default App;
