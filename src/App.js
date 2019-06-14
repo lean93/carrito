@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Form, Icon, Input, Button, InputNumber, Table } from 'antd';
+import { Form, Icon, Input, Button, InputNumber, Table, message, Popconfirm } from 'antd';
 import NumericInput from './NumericInput';
 
 const Column = Table.Column;
@@ -13,12 +13,13 @@ class App extends Component {
       description: "",
       unit: 1,
       value: null,
-      cartList:[]
+      cartList: JSON.parse(localStorage.getItem('makro-cart-items')) || []
     }
     this.onChangeUnit = this.onChangeUnit.bind(this);
     this.onChangeValue = this.onChangeValue.bind(this);
     this.onAddElement = this.onAddElement.bind(this);
     this.onChangeDescription = this.onChangeDescription.bind(this);
+    this.onDelete = this.onDelete.bind(this);
   }
 
   onAddElement(){
@@ -29,9 +30,14 @@ class App extends Component {
     }
     let newCart = this.state.cartList.slice();
     newCart.push(newItem)
+    localStorage.setItem('makro-cart-items', JSON.stringify(newCart));
     this.setState({
-      cartList:newCart
+      cartList:newCart,
+      description: "",
+      unit: 1,
+      value: null
     })
+    message.success(<React.Fragment><b>{newItem.description }</b> cargado correctamente. Total: <b>$ {newItem.unit * newItem.value}</b> </React.Fragment>, 5);
   }
 
   onChangeUnit(e) {
@@ -50,6 +56,15 @@ class App extends Component {
     })
   }
 
+  onDelete(data){
+    const newData = this.state.cartList.filter(item =>{
+      return item.description !== data.description;
+    });
+    this.setState({
+      cartList: newData
+    });
+    localStorage.setItem('makro-cart-items', JSON.stringify(newData));
+  }
   render() {
     let mensaje = "Todavia no ha cargado nigun valor";
     if(this.state.cartList.length){
@@ -80,6 +95,7 @@ class App extends Component {
           <Form.Item>
             <InputNumber
               defaultValue={this.state.value}
+              value={this.state.value}
               placeholder="Precio"
               formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               parser={value => value.replace(/\$\s?|(,*)/g, '')}
@@ -97,12 +113,18 @@ class App extends Component {
         <b> {mensaje}</b>
         <br/>
         <br/>
-        <Table dataSource={this.state.cartList} pagination={true} size='small' bordered={true} >
+        <Table dataSource={this.state.cartList} pagination={true} size='small' bordered={true} rowKey="description">
             <Column align='center' key='description' title='Descripcion' dataIndex='description' />
             <Column align='center' key='unit' title='Cantidad' dataIndex='unit' />
             <Column align='center' key='value' title='Precio Unitario' dataIndex='value' />
-            <Column align='center' key='value' title='Total Item' render={data=>{
+            <Column align='center' key='totalUnit' title='Total Item' render={data=>{
               return data.unit * data.value
+            }}/>
+            <Column align='center' key='action' title='Acciones' render={data=>{
+               return (<Popconfirm placement="top" title={"Esta seguro de eliminar: " + data.description +"?"} onConfirm={()=>this.onDelete(data)} okText="Yes" cancelText="No">
+                  <Icon type="delete" style={{color: 'red'}} title="Borrar Item"/>              
+                </Popconfirm>)
+               
             }}/>
         </Table>
 
