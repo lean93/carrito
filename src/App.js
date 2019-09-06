@@ -50,10 +50,10 @@ class App extends Component {
     })
   }
 
-  onAddElement() {
+  onAddElement(fromWishList) {
     message.destroy();
     const newItem = {
-      description: this.state.description,
+      description: fromWishList || this.state.description,
       unit: this.state.unit,
       value: this.state.value
     }
@@ -88,7 +88,10 @@ class App extends Component {
   }
 
   addElementFromWishList(){
-
+    const itemwish = this.state.wishDescription;
+    this.onAddElement(itemwish);
+    this.onDeleteWish({description: itemwish})
+    this.hideModal();
   }
 
   onChangeUnit(e) {
@@ -116,7 +119,6 @@ class App extends Component {
     });
     localStorage.setItem('makro-cart-items', JSON.stringify(newData));
     message.success(<React.Fragment>Item: <b>{data.description}</b> eliminado correctamente del carrito.</React.Fragment>, 3);
-
   }
 
   onDeleteWish(data) {
@@ -138,17 +140,20 @@ class App extends Component {
   onAddWishList(){
     let actualItemes = this.state.wihsList;
     actualItemes.push({description:this.state.wishDescription});
+    message.success(<React.Fragment><b>{this.state.wishDescription}</b> añidido correctamente a deseados</React.Fragment>, 3);
     this.setState({
-      wihsList: actualItemes
+      wihsList: actualItemes,
+      wishDescription:undefined
     })
     localStorage.setItem('makro-wish-list', JSON.stringify(actualItemes));
-
   }
 
   hideModal(){
     this.setState({
       showAddFromWohsiList: false,
-      wishDescription: undefined
+      wishDescription: undefined,
+      unit: undefined,
+      value: undefined
     })
   }
 
