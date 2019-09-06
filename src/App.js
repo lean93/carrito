@@ -319,7 +319,7 @@ class App extends Component {
         </Collapse>
     </Content>
           <Footer style={{backgroundColor:'#393939'}}>
-            <p style={{color: 'white'}}>Carrito developed by <b>@Lean93</b></p>
+            <p style={{color: 'white'}}>Carrito developed by <b> <a href="https://github.com/lean93">@Lean93</a></b></p>
           </Footer>
         </Layout>
       </div>
