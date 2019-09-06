@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Form, Icon, Input, Button, InputNumber, Table, message, Popconfirm, Row, Col, Modal } from 'antd';
+import { Form, Icon, Input, Button, InputNumber, Table, message, Popconfirm, Row, Col, Modal, Layout } from 'antd';
 import NumericInput from './NumericInput';
 import { Collapse } from 'antd';
 
+const { Footer, Content } = Layout;
 const { Panel } = Collapse;
 
 const Column = Table.Column;
@@ -174,7 +175,7 @@ class App extends Component {
     const disableButton = !this.state.description || !this.state.unit || !this.state.value
     const disableWishButton = !this.state.wishDescription;
     return (
-      <div className="App">
+      <div className="App" style={{backgroundColor:'#393939'}}>
           <Modal
             title={<p>Añadiendo <b>{this.state.wishDescription}</b> al carrito</p>}
             visible={this.state.showAddFromWohsiList}
@@ -207,7 +208,9 @@ class App extends Component {
                     </Col>
                 </Row>
           </Modal>
-        <Collapse>
+        <Layout style={{backgroundColor:'#393939'}}>
+        <Content style={{backgroundColor:'#393939'}}>
+        <Collapse accordion>
           <Panel header={<React.Fragment><Icon type="shopping-cart"/> <b>Carrito</b></React.Fragment>}>
           <Row type="flex" align='middle' justify='center'>
               <Form layout="inline">
@@ -314,6 +317,11 @@ class App extends Component {
             </Table>
           </Panel>
         </Collapse>
+    </Content>
+          <Footer style={{backgroundColor:'#393939'}}>
+            <p style={{color: 'white'}}>Carrito developed by <b>@Lean93</b></p>
+          </Footer>
+        </Layout>
       </div>
     );
   }
