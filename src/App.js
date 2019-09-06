@@ -138,14 +138,19 @@ class App extends Component {
     })
   }
   onAddWishList(){
-    let actualItemes = this.state.wihsList;
-    actualItemes.push({description:this.state.wishDescription});
-    message.success(<React.Fragment><b>{this.state.wishDescription}</b> añidido correctamente a deseados</React.Fragment>, 3);
-    this.setState({
-      wihsList: actualItemes,
-      wishDescription:undefined
-    })
-    localStorage.setItem('makro-wish-list', JSON.stringify(actualItemes));
+    const newWishItems = this.state.wishDescription;
+    if(this.state.cartList.some(item => item.description === newWishItems)){
+      message.error(<React.Fragment>Ya existe: <b>{newWishItems}</b> en el carrito</React.Fragment>, 3);
+    }else{
+        let actualItemes = this.state.wihsList;
+        actualItemes.push({description:newWishItems});
+        message.success(<React.Fragment><b>{newWishItems}</b> añidido correctamente a deseados</React.Fragment>, 3);
+        this.setState({
+          wihsList: actualItemes,
+          wishDescription:undefined
+        })
+        localStorage.setItem('makro-wish-list', JSON.stringify(actualItemes));
+    }
   }
 
   hideModal(){
@@ -203,7 +208,7 @@ class App extends Component {
                 </Row>
           </Modal>
         <Collapse>
-          <Panel header="Añadir al carrito">
+          <Panel header={<React.Fragment><Icon type="shopping-cart"/> <b>Carrito</b></React.Fragment>}>
           <Row type="flex" align='middle' justify='center'>
               <Form layout="inline">
                 <Col sm={6}>
@@ -261,7 +266,7 @@ class App extends Component {
               }} />
               <Column align='center' key='action' title='Acciones' render={data => {
                 return (<React.Fragment>
-                  <Icon type="edit" style={{ color: 'blue', marginRight: 30 }} title="Borrar Item" onClick={() => this.onEditItem(data)} />
+                  <Icon type="edit" style={{ color: 'blue', marginRight: 15 }} title="Borrar Item" onClick={() => this.onEditItem(data)} />
                   <Popconfirm placement="top" title={"Esta seguro de eliminar: " + data.description + "?"} onConfirm={() => this.onDelete(data)} okText="Yes" cancelText="No">
                     <Icon type="delete" style={{ color: 'red' }} title="Borrar Item" />
                   </Popconfirm>
@@ -270,7 +275,7 @@ class App extends Component {
               }} />
             </Table>
           </Panel>
-          <Panel header="Lista de Compra">
+          <Panel header={<React.Fragment><Icon type="ordered-list"/>   Lista de Compra</React.Fragment>}>
           <Row type="flex" align='middle' justify='center'>
               <Form layout="inline">
                 <Col sm={14}>
