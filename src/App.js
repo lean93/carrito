@@ -28,8 +28,8 @@ class App extends Component {
     this.onChangeDescription = this.onChangeDescription.bind(this);
     this.onDelete = this.onDelete.bind(this);
     this.onEditItem = this.onEditItem.bind(this);
-    this.onChangeWishDescription = this.onChangeWishDescription.bind(this); 
-    this.onAddWishList = this.onAddWishList.bind(this); 
+    this.onChangeWishDescription = this.onChangeWishDescription.bind(this);
+    this.onAddWishList = this.onAddWishList.bind(this);
     this.hideModal = this.hideModal.bind(this);
     this.openModal = this.openModal.bind(this);
     this.addElementFromWishList = this.addElementFromWishList.bind(this);
@@ -44,10 +44,10 @@ class App extends Component {
     })
   }
 
-  openModal(data){
+  openModal(data) {
     this.setState({
-      showAddFromWohsiList:true,
-      wishDescription:data.description,
+      showAddFromWohsiList: true,
+      wishDescription: data.description,
     })
   }
 
@@ -88,10 +88,10 @@ class App extends Component {
     }
   }
 
-  addElementFromWishList(){
+  addElementFromWishList() {
     const itemwish = this.state.wishDescription;
     this.onAddElement(itemwish);
-    this.onDeleteWish({description: itemwish})
+    this.onDeleteWish({ description: itemwish })
     this.hideModal();
   }
 
@@ -133,28 +133,28 @@ class App extends Component {
     message.success(<React.Fragment>Item: <b>{data.description}</b> eliminado correctamente de la lista de deseados.</React.Fragment>, 3);
 
   }
-  onChangeWishDescription(e){
+  onChangeWishDescription(e) {
     this.setState({
       wishDescription: e.target.value
     })
   }
-  onAddWishList(){
+  onAddWishList() {
     const newWishItems = this.state.wishDescription;
-    if(this.state.cartList.some(item => item.description === newWishItems)){
+    if (this.state.cartList.some(item => item.description === newWishItems)) {
       message.error(<React.Fragment>Ya existe: <b>{newWishItems}</b> en el carrito</React.Fragment>, 3);
-    }else{
-        let actualItemes = this.state.wihsList;
-        actualItemes.push({description:newWishItems});
-        message.success(<React.Fragment><b>{newWishItems}</b> añidido correctamente a deseados</React.Fragment>, 3);
-        this.setState({
-          wihsList: actualItemes,
-          wishDescription:undefined
-        })
-        localStorage.setItem('makro-wish-list', JSON.stringify(actualItemes));
+    } else {
+      let actualItemes = this.state.wihsList;
+      actualItemes.push({ description: newWishItems });
+      message.success(<React.Fragment><b>{newWishItems}</b> añidido correctamente a deseados</React.Fragment>, 3);
+      this.setState({
+        wihsList: actualItemes,
+        wishDescription: undefined
+      })
+      localStorage.setItem('makro-wish-list', JSON.stringify(actualItemes));
     }
   }
 
-  hideModal(){
+  hideModal() {
     this.setState({
       showAddFromWohsiList: false,
       wishDescription: undefined,
@@ -175,151 +175,151 @@ class App extends Component {
     const disableButton = !this.state.description || !this.state.unit || !this.state.value
     const disableWishButton = !this.state.wishDescription;
     return (
-      <div className="App" style={{backgroundColor:'#393939'}}>
-          <Modal
-            title={<p>Añadiendo <b>{this.state.wishDescription}</b> al carrito</p>}
-            visible={this.state.showAddFromWohsiList}
-            onOk={this.addElementFromWishList}
-            width={400}
-            onCancel={this.hideModal}>
+      <div className="App" style={{ backgroundColor: '#393939' }}>
+        <Modal
+          title={<p>Añadiendo <b>{this.state.wishDescription}</b> al carrito</p>}
+          visible={this.state.showAddFromWohsiList}
+          onOk={this.addElementFromWishList}
+          width={400}
+          onCancel={this.hideModal}>
           <Row type="flex" align='middle' justify='center'>
-                  <Col sm={12}>
-                        <Form.Item>
-                          <NumericInput value={this.state.unit}
-                            onChange={this.onChangeUnit}
-                            style={{width:200}}
-                            prefix={<Icon type="number" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            placeholder="Cantidad"
-                          />
-                        </Form.Item>
-                      </Col>
-                      <Col sm={12}>
-                        <Form.Item>
-                          <InputNumber
-                            defaultValue={this.state.value}
-                            value={this.state.value}
-                            style={{width:200}}
-                            placeholder="Precio"
-                            formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                            parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                            onChange={this.onChangeValue}
-                          />
-                        </Form.Item>
+            <Col sm={12}>
+              <Form.Item>
+                <NumericInput value={this.state.unit}
+                  onChange={this.onChangeUnit}
+                  style={{ width: 200 }}
+                  prefix={<Icon type="number" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  placeholder="Cantidad"
+                />
+              </Form.Item>
+            </Col>
+            <Col sm={12}>
+              <Form.Item>
+                <InputNumber
+                  defaultValue={this.state.value}
+                  value={this.state.value}
+                  style={{ width: 200 }}
+                  placeholder="Precio"
+                  formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                  onChange={this.onChangeValue}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Modal>
+        <Layout style={{ backgroundColor: '#393939', display:'flex', flexDirection:'column', width:'100%'}}>
+          <Content style={{ backgroundColor: '#393939', flex:'1 0 auto'}}>
+            <Collapse accordion>
+              <Panel header={<React.Fragment><Icon type="shopping-cart" /> <b>Carrito</b></React.Fragment>}>
+                <Row type="flex" align='middle' justify='center'>
+                  <Form layout="inline">
+                    <Col sm={6}>
+                      <Form.Item>
+                        <Input
+                          prefix={<Icon type="barcode" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                          placeholder="Ingrese Descripcion"
+                          disabled={this.state.editionMode}
+                          onChange={this.onChangeDescription}
+                          value={this.state.description}
+                        />
+                      </Form.Item>
                     </Col>
+                    <Col sm={6}>
+                      <Form.Item>
+                        <NumericInput value={this.state.unit}
+                          onChange={this.onChangeUnit}
+                          prefix={<Icon type="number" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                          placeholder="Cantidad"
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col sm={6}>
+                      <Form.Item>
+                        <InputNumber
+                          defaultValue={this.state.value}
+                          value={this.state.value}
+                          placeholder="Precio"
+                          style={{ width: 190 }}
+                          formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                          parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                          onChange={this.onChangeValue}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col sm={6}>
+                      <Form.Item>
+                        <Button type="primary" icon={buttonIcon} onClick={this.onAddElement} disabled={disableButton}>
+                          {buttonMsg}
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Form>
                 </Row>
-          </Modal>
-        <Layout style={{backgroundColor:'#393939'}}>
-        <Content style={{backgroundColor:'#393939'}}>
-        <Collapse accordion>
-          <Panel header={<React.Fragment><Icon type="shopping-cart"/> <b>Carrito</b></React.Fragment>}>
-          <Row type="flex" align='middle' justify='center'>
-              <Form layout="inline">
-                <Col sm={6}>
-                  <Form.Item>
-                    <Input
-                      prefix={<Icon type="barcode" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder="Ingrese Descripcion"
-                      disabled={this.state.editionMode}
-                      onChange={this.onChangeDescription}
-                      value={this.state.description}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col sm={6}>
-                  <Form.Item>
-                    <NumericInput value={this.state.unit}
-                      onChange={this.onChangeUnit}
-                      prefix={<Icon type="number" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder="Cantidad"
-                    />
-                  </Form.Item>
-                </Col>
-                <Col sm={6}>
-                  <Form.Item>
-                    <InputNumber
-                      defaultValue={this.state.value}
-                      value={this.state.value}
-                      placeholder="Precio"
-                      style={{width:190}}
-                      formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                      parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                      onChange={this.onChangeValue}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col sm={6}>
-                  <Form.Item>
-                    <Button type="primary" icon={buttonIcon} onClick={this.onAddElement} disabled={disableButton}>
-                      {buttonMsg}
+                <br />
+                <b> {mensaje}</b>
+                <br />
+                <br />
+                <Table dataSource={this.state.cartList} pagination={true} size='small' bordered={true} rowKey="description">
+                  <Column align='center' key='description' title='Descripcion' dataIndex='description' />
+                  <Column align='center' key='unit' title='Cantidad' dataIndex='unit' />
+                  <Column align='center' key='value' title='Precio Unitario' dataIndex='value' />
+                  <Column align='center' key='totalUnit' title='Total Item' render={data => {
+                    return data.unit * data.value
+                  }} />
+                  <Column align='center' key='action' title='Acciones' render={data => {
+                    return (<React.Fragment>
+                      <Icon type="edit" style={{ color: 'blue', marginRight: 15 }} title="Borrar Item" onClick={() => this.onEditItem(data)} />
+                      <Popconfirm placement="top" title={"Esta seguro de eliminar: " + data.description + "?"} onConfirm={() => this.onDelete(data)} okText="Yes" cancelText="No">
+                        <Icon type="delete" style={{ color: 'red' }} title="Borrar Item" />
+                      </Popconfirm>
+                    </React.Fragment>
+                    );
+                  }} />
+                </Table>
+              </Panel>
+              <Panel header={<React.Fragment><Icon type="ordered-list" />   Lista de Compra</React.Fragment>}>
+                <Row type="flex" align='middle' justify='center'>
+                  <Form layout="inline">
+                    <Col sm={14}>
+                      <Form.Item>
+                        <Input
+                          prefix={<Icon type="barcode" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                          placeholder="Ingrese Descripcion"
+                          disabled={this.state.editionMode}
+                          onChange={this.onChangeWishDescription}
+                          value={this.state.wishDescription}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col sm={10}>
+                      <Form.Item>
+                        <Button type="primary" icon={buttonIcon} onClick={this.onAddWishList} disabled={disableWishButton}>
+                          Añadir a Lista
                     </Button>
-                  </Form.Item>
-                </Col>
-              </Form>
-            </Row>
-            <br />
-            <b> {mensaje}</b>
-            <br />
-            <br />
-            <Table dataSource={this.state.cartList} pagination={true} size='small' bordered={true} rowKey="description">
-              <Column align='center' key='description' title='Descripcion' dataIndex='description' />
-              <Column align='center' key='unit' title='Cantidad' dataIndex='unit' />
-              <Column align='center' key='value' title='Precio Unitario' dataIndex='value' />
-              <Column align='center' key='totalUnit' title='Total Item' render={data => {
-                return data.unit * data.value
-              }} />
-              <Column align='center' key='action' title='Acciones' render={data => {
-                return (<React.Fragment>
-                  <Icon type="edit" style={{ color: 'blue', marginRight: 15 }} title="Borrar Item" onClick={() => this.onEditItem(data)} />
-                  <Popconfirm placement="top" title={"Esta seguro de eliminar: " + data.description + "?"} onConfirm={() => this.onDelete(data)} okText="Yes" cancelText="No">
-                    <Icon type="delete" style={{ color: 'red' }} title="Borrar Item" />
-                  </Popconfirm>
-                </React.Fragment>
-                );
-              }} />
-            </Table>
-          </Panel>
-          <Panel header={<React.Fragment><Icon type="ordered-list"/>   Lista de Compra</React.Fragment>}>
-          <Row type="flex" align='middle' justify='center'>
-              <Form layout="inline">
-                <Col sm={14}>
-                  <Form.Item>
-                    <Input
-                      prefix={<Icon type="barcode" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder="Ingrese Descripcion"
-                      disabled={this.state.editionMode}
-                      onChange={this.onChangeWishDescription}
-                      value={this.state.wishDescription}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col sm={10}>
-                  <Form.Item>
-                    <Button type="primary" icon={buttonIcon} onClick={this.onAddWishList} disabled={disableWishButton}>
-                        Añadir a Lista
-                    </Button>
-                  </Form.Item>
-                </Col>
-              </Form>
-            </Row>
-            <br />
-            <br />
-            <Table dataSource={this.state.wihsList} pagination={true} size='small' bordered={true} rowKey="description">
-              <Column align='center' key='description' title='Descripcion' dataIndex='description' />
-              <Column align='center' key='action' title='Acciones' render={data => {
-                return (<React.Fragment>
-                  <Icon type="shopping-cart" style={{ color: 'green', marginRight: 30 }} title="v" onClick={() => this.openModal(data)}/>
-                  <Popconfirm placement="top" title={"Esta seguro de remover: " + data.description + "?"} onConfirm={() => this.onDeleteWish(data)} okText="Yes" cancelText="No">
-                    <Icon type="delete" style={{ color: 'red' }} title="Borrar Item" />
-                  </Popconfirm>
-                </React.Fragment>
-                );
-              }} />
-            </Table>
-          </Panel>
-        </Collapse>
-    </Content>
-          <Footer style={{backgroundColor:'#393939'}}>
-            <p style={{color: 'white'}}>Carrito developed by <b> <a href="https://github.com/lean93">@Lean93</a></b></p>
+                      </Form.Item>
+                    </Col>
+                  </Form>
+                </Row>
+                <br />
+                <br />
+                <Table dataSource={this.state.wihsList} pagination={true} size='small' bordered={true} rowKey="description">
+                  <Column align='center' key='description' title='Descripcion' dataIndex='description' />
+                  <Column align='center' key='action' title='Acciones' render={data => {
+                    return (<React.Fragment>
+                      <Icon type="shopping-cart" style={{ color: 'green', marginRight: 30 }} title="v" onClick={() => this.openModal(data)} />
+                      <Popconfirm placement="top" title={"Esta seguro de remover: " + data.description + "?"} onConfirm={() => this.onDeleteWish(data)} okText="Yes" cancelText="No">
+                        <Icon type="delete" style={{ color: 'red' }} title="Borrar Item" />
+                      </Popconfirm>
+                    </React.Fragment>
+                    );
+                  }} />
+                </Table>
+              </Panel>
+            </Collapse>
+          </Content>
+          <Footer style={{ backgroundColor: '#393939', flexShrink:0 }}>
+            <p style={{ color: 'white' }}>Carrito developed by <b> <a href="https://github.com/lean93">@Lean93</a></b></p>
           </Footer>
         </Layout>
       </div>
