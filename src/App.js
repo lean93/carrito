@@ -54,7 +54,7 @@ class App extends Component {
   onAddElement(fromWishList) {
     message.destroy();
     const newItem = {
-      description: fromWishList || this.state.description,
+      description: typeof fromWishList === 'string'? fromWishList: this.state.description,
       unit: this.state.unit,
       value: this.state.value
     }
@@ -71,7 +71,7 @@ class App extends Component {
         editionMode: false,
         cartList: newCart,
         description: "",
-        unit: 1,
+        unit: undefined,
         value: null
       })
       message.success(<React.Fragment><b>{newItem.description}</b> Editado correctamente. Nuevo Total: <b>$ {newItem.unit * newItem.value}</b> </React.Fragment>, 3);
@@ -81,7 +81,7 @@ class App extends Component {
       this.setState({
         cartList: newCart,
         description: "",
-        unit: 1,
+        unit: undefined,
         value: null
       })
       message.success(<React.Fragment><b>{newItem.description}</b> cargado correctamente. Total: <b>$ {newItem.unit * newItem.value}</b> </React.Fragment>, 3);
@@ -170,7 +170,7 @@ class App extends Component {
       mensaje = "Gasto Total: $" + toal;
     }
 
-    const buttonMsg = this.state.editionMode ? "Guradar" : "Agregar";
+    const buttonMsg = this.state.editionMode ? "Guardar Cambios" : "Agregar";
     const buttonIcon = this.state.editionMode ? "save" : "shopping-cart";
     const disableButton = !this.state.description || !this.state.unit || !this.state.value
     const disableWishButton = !this.state.wishDescription;
