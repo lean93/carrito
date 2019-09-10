@@ -81,6 +81,9 @@ class CustomInputNumber extends Component {
         const decimalType = this.getDecimalType(this.state.divisor);
         const fixedValue = this.state.divisor ===1? 0 :2
         const result = Number.parseFloat((this.state.value * this.state.cant).toFixed(2));
+        const iconSign = this.state.sign <0 ? "caret-down": "caret-up"
+        const iconSignButton = this.state.sign <0 ? "danger": "primary"
+
         return (<Drawer
                     title={<p style={{fontSize:20}}>Añadiendo a carrito: <b>{this.props.description}</b></p>}
                     placement='bottom'
@@ -143,8 +146,8 @@ class CustomInputNumber extends Component {
                     </Row>
                     <Row type="flex" align='middle' justify='center' gutter={24} style={{marginBottom:20}}>
                         <Col sm={8}>
-                        <Button style={{ width: 100,  }} type='danger' onClick={this.changeSign} size='large'>
-                            <Icon type="caret-down" style={{margin:0}}/> <Icon type="dollar" style={{margin:0}} />
+                        <Button style={{ width: 100,  }} type={iconSignButton} onClick={this.changeSign} size='large'>
+                            <Icon type={iconSign} style={{margin:0}}/> <Icon type="dollar" style={{margin:0}} />
                         </Button>
                         </Col>
                         <Col sm={8}>
