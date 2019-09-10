@@ -172,6 +172,7 @@ class App extends Component {
   }
 
   render() {
+    message.config({top: 600})
     let mensaje = "Todavia no ha cargado nigun valor";
     if (this.state.cartList.length) {
       const toal = this.state.cartList.map(item => item.unit * item.value).reduce((firstValue, secondValue) => firstValue + secondValue);

@@ -83,7 +83,6 @@ class CustomInputNumber extends Component {
         const result = Number.parseFloat((this.state.value * this.state.cant).toFixed(2));
         const iconSign = this.state.sign <0 ? "caret-down": "caret-up"
         const iconSignButton = this.state.sign <0 ? "danger": "primary"
-
         return (<Drawer
                     title={<p style={{fontSize:20}}>Añadiendo a carrito: <b>{this.props.description}</b></p>}
                     placement='bottom'
