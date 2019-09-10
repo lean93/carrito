@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Form, Icon, Input, Button, InputNumber, Table, message, Popconfirm, Row, Col, Modal, Layout } from 'antd';
+import { Form, Icon, Input, Button, InputNumber, Table, message, Popconfirm, Row, Col, Layout } from 'antd';
 import NumericInput from './NumericInput';
 import { Collapse } from 'antd';
+import CustomInputNumber from './CustomInputNumber';
 
 const { Footer, Content } = Layout;
 const { Panel } = Collapse;
@@ -33,6 +34,7 @@ class App extends Component {
     this.hideModal = this.hideModal.bind(this);
     this.openModal = this.openModal.bind(this);
     this.addElementFromWishList = this.addElementFromWishList.bind(this);
+    this.onSubmitWishList = this.onSubmitWishList.bind(this);
   }
 
   onEditItem(item) {
@@ -51,10 +53,10 @@ class App extends Component {
     })
   }
 
-  onAddElement(fromWishList) {
+  onAddElement(data) {
     message.destroy();
-    const newItem = {
-      description: typeof fromWishList === 'string'? fromWishList: this.state.description,
+    const newItem = data.description? data : {
+      description: this.state.description,
       unit: this.state.unit,
       value: this.state.value
     }
@@ -92,6 +94,12 @@ class App extends Component {
     const itemwish = this.state.wishDescription;
     this.onAddElement(itemwish);
     this.onDeleteWish({ description: itemwish })
+    this.hideModal();
+  }
+
+  onSubmitWishList(data){
+    this.onAddElement(data);
+    this.onDeleteWish({ description: data.description })
     this.hideModal();
   }
 
@@ -176,38 +184,8 @@ class App extends Component {
     const disableWishButton = !this.state.wishDescription;
     return (
       <div className="App" style={{ backgroundColor: '#393939' }}>
-        <Modal
-          title={<p>Añadiendo <b>{this.state.wishDescription}</b> al carrito</p>}
-          visible={this.state.showAddFromWohsiList}
-          onOk={this.addElementFromWishList}
-          width={400}
-          onCancel={this.hideModal}>
-          <Row type="flex" align='middle' justify='center'>
-            <Col sm={12}>
-              <Form.Item>
-                <NumericInput value={this.state.unit}
-                  onChange={this.onChangeUnit}
-                  style={{ width: 200 }}
-                  prefix={<Icon type="number" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  placeholder="Cantidad"
-                />
-              </Form.Item>
-            </Col>
-            <Col sm={12}>
-              <Form.Item>
-                <InputNumber
-                  defaultValue={this.state.value}
-                  value={this.state.value}
-                  style={{ width: 200 }}
-                  placeholder="Precio"
-                  formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                  onChange={this.onChangeValue}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Modal>
+        <CustomInputNumber visible={this.state.showAddFromWohsiList} onClose={this.hideModal} description={this.state.wishDescription} 
+                        onSubmit={this.onSubmitWishList}/>
         <Layout style={{ backgroundColor: '#393939', display:'flex', flexDirection:'column', width:'100%'}}>
           <Content style={{ backgroundColor: '#393939', flex:'1 0 auto'}}>
             <Collapse accordion>
