@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Drawer ,Button, Row, Col, Slider, Icon } from 'antd';
+import { Drawer ,Button, Row, Col, Slider, Icon, Checkbox } from 'antd';
 
 
 class CustomInputNumber extends Component {
@@ -10,7 +10,8 @@ class CustomInputNumber extends Component {
             value:0,
             cant:1,
             sign:1,
-            divisor:1
+            divisor:1,
+            iva:true
         }
         this.onAddValue = this.onAddValue.bind(this);
         this.onChangeCant =this.onChangeCant.bind(this);
@@ -18,6 +19,7 @@ class CustomInputNumber extends Component {
         this.onChangeDivisor = this.onChangeDivisor.bind(this);
         this.onAddToChart = this.onAddToChart.bind(this);
         this.onClear = this.onClear.bind(this);
+        this.onChangeIVA = this.onChangeIVA.bind(this);
     }
 
     onAddValue(plus){
@@ -57,12 +59,12 @@ class CustomInputNumber extends Component {
     }
 
     onAddToChart(){
+        const fullValue = this.state.iva? this.state.value : Number.parseFloat((this.state.value*1.21).toFixed(2)); 
         const result = {
             description: this.props.description,
-            value: this.state.value,
+            value: fullValue,
             unit: this.state.cant
         }
-        console.log(result);
         this.props.onSubmit(result);
         this.onClear();
     }
@@ -72,17 +74,30 @@ class CustomInputNumber extends Component {
             value:0,
             cant:1,
             sign:1,
-            divisor:1
+            divisor:1,
+            iva:true
         })
     }
 
+    onChangeIVA(e){
+        this.setState({
+            iva: e.target.checked
+        });
+    }
     render() {
         const buttonType = this.getNumberType(this.state.sign);
         const decimalType = this.getDecimalType(this.state.divisor);
         const fixedValue = this.state.divisor ===1? 0 :2
-        const result = Number.parseFloat((this.state.value * this.state.cant).toFixed(2));
+        let result = Number.parseFloat((this.state.value * this.state.cant).toFixed(2));
         const iconSign = this.state.sign <0 ? "caret-down": "caret-up"
         const iconSignButton = this.state.sign <0 ? "danger": "primary"
+        const numericButtons = [1,2,5,10,20,50,100,500];
+        let extraData = ""
+        if(!this.state.iva){
+            extraData = "(+$" + (result*0.21).toFixed(2)+")";
+            result = Number.parseFloat((result*1.21).toFixed(2));   
+        }
+
         return (<Drawer
                     title={<p style={{fontSize:20}}>Añadiendo a carrito: <b>{this.props.description}</b></p>}
                     placement='bottom'
@@ -91,57 +106,30 @@ class CustomInputNumber extends Component {
                     onClose={this.props.onClose}
                     visible={this.props.visible}>
 
-                    <Row type="flex" align='middle' justify='center' gutter={24} style={{marginBottom:20}}>
-                        <p style={{fontSize:30, color:"#1B56AB"}}>
-                            <b style={{fontSize:50}}>$ {this.state.value}</b> 
-                            (x{this.state.cant}) = ${result}
-                        </p>
-                    </Row>
-
-                    <Row type="flex" align='middle' justify='center' gutter={24} style={{marginBottom:20}}>
-                        <Col sm={6}>
-                        <Button style={{ width: 60 }} onClick={()=>this.onAddValue(1)} type={buttonType} size='large'>
-                            <b>{(1/this.state.divisor).toFixed(fixedValue)}</b>
-                        </Button>
-                        </Col>
-                        <Col sm={6}>
-                        <Button style={{ width: 60 }} onClick={()=>this.onAddValue(2)} type={buttonType} size='large'>
-                            <b>{(2/this.state.divisor).toFixed(fixedValue)}</b>
-                        </Button>
-                        </Col>
-                        <Col sm={6}>
-                        <Button style={{ width: 60 }} onClick={()=>this.onAddValue(5)} type={buttonType} size='large'>
-                            <b>{(5/this.state.divisor).toFixed(fixedValue)}</b>
-                        </Button>
-                        </Col>
-                        <Col sm={6}>
-                        <Button style={{ width: 60 }} onClick={()=>this.onAddValue(10)} type={buttonType} size='large'>
-                            <b>{(10/this.state.divisor).toFixed(fixedValue)}</b>
-                        </Button>
+                    <Row type="flex" align='middle' justify='center' gutter={24} style={{padding:0}}>
+                        <Col>
+                            <div style={{fontSize:30, color:"#1B56AB", marginBottom:0}}>
+                                <p style={{marginBottom:0, textAlign:'centers'}}>
+                                <b style={{fontSize:50}}>$ {this.state.value}</b> 
+                                (x{this.state.cant}) =</p> 
+                                <p style={{marginBottom:0, textAlign:'center'}}>${result} <i style={{fontSize:20, color:'#B65F5F'}}>{extraData}</i></p>
+                            </div>
                         </Col>
                     </Row>
 
-                    <Row type="flex" align='middle' justify='center' gutter={24} style={{marginBottom:60}}>
-                        <Col sm={6}>
-                        <Button style={{ width: 60 }} onClick={()=>this.onAddValue(20)} type={buttonType} size='large'>
-                            <b>{(20/this.state.divisor).toFixed(fixedValue)}</b>
-                        </Button>
+                    <Row type="flex" align='middle' justify='center' gutter={24} style={{marginBottom:40}}>
+                        <Col>
+                            <Checkbox checked={this.state.iva} onChange={this.onChangeIVA}><b> Incluye IVA</b></Checkbox>
                         </Col>
-                        <Col sm={6}>
-                        <Button style={{ width: 60 }} onClick={()=>this.onAddValue(50)} type={buttonType} size='large'>
-                            <b>{(50/this.state.divisor).toFixed(fixedValue)}</b>
-                        </Button>
-                        </Col>
-                        <Col sm={6}>
-                        <Button style={{ width: 60 }} onClick={()=>this.onAddValue(100)} type={buttonType} size='large'>
-                            <b>{(100/this.state.divisor).toFixed(fixedValue)}</b>
-                        </Button>
-                        </Col>
-                        <Col sm={6}>
-                        <Button style={{ width: 60 }} onClick={()=>this.onAddValue(500)} type={buttonType} size='large'>
-                            <b>{(500/this.state.divisor).toFixed(fixedValue)}</b>
-                        </Button>
-                        </Col>
+                    </Row>
+                    <Row type="flex" align='middle' justify='center' gutter={24} style={{marginBottom:20}}>
+                        {numericButtons.map(value=>
+                            <Col  span={6}key={value}>
+                                <Button style={{ width: 65, marginBottom:20 }} onClick={()=>this.onAddValue(value)} type={buttonType} size='large'>
+                                    <b>{(value/this.state.divisor).toFixed(fixedValue)}</b>
+                                </Button>
+                            </Col>
+                        )}
                     </Row>
                     <Row type="flex" align='middle' justify='center' gutter={24} style={{marginBottom:20}}>
                         <Col sm={8}>
@@ -161,9 +149,15 @@ class CustomInputNumber extends Component {
                         </Col>
                     </Row>
 
-                    <Row gutter={24} style={{marginBottom:20}}>
-                        <Col sm={24}>
-                            <Slider min={1} max={30} value={this.state.cant} onChange={this.onChangeCant}/>
+                    <Row style={{marginBottom:20}} type="flex" align='middle' justify='center'>
+                        <Col span={1}>
+                            <b>1</b>
+                        </Col>
+                        <Col span={21}>
+                        <Slider min={1} max={20} value={this.state.cant} onChange={this.onChangeCant}/>
+                        </Col>
+                        <Col span={2}>
+                            <b>20</b>
                         </Col>
                     </Row>
 
