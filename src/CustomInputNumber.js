@@ -43,7 +43,7 @@ class CustomInputNumber extends Component {
         setTimeout(
             function() {
                 rest();
-        }, 500);
+        }, 300);
     }
 
     changeSign(){
