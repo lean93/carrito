@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Drawer ,Button, Row, Col, Slider, Icon, Checkbox } from 'antd';
-
+import { Drawer ,Button, Row, Col, Slider, Icon, Checkbox, Badge } from 'antd';
 
 class CustomInputNumber extends Component {
 
@@ -11,7 +10,8 @@ class CustomInputNumber extends Component {
             cant:1,
             sign:1,
             divisor:1,
-            iva:true
+            iva:true,
+            lastValueAdded:0
         }
         this.onAddValue = this.onAddValue.bind(this);
         this.onChangeCant =this.onChangeCant.bind(this);
@@ -20,6 +20,13 @@ class CustomInputNumber extends Component {
         this.onAddToChart = this.onAddToChart.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onChangeIVA = this.onChangeIVA.bind(this);
+        this.onResetCount = this.onResetCount.bind(this);
+    }
+
+    onResetCount(){
+        this.setState({
+            lastValueAdded:0
+        })
     }
 
     onAddValue(plus){
@@ -27,8 +34,14 @@ class CustomInputNumber extends Component {
         const actual = Number.parseFloat(this.state.value.toFixed(2));
         const toADd = Number.parseFloat((inputAdd * this.state.sign).toFixed(2));
         this.setState({
-            value : Number.parseFloat((actual + toADd).toFixed(2))
+            value : Number.parseFloat((actual + toADd).toFixed(2)),
+            lastValueAdded: plus
         })
+        const rest = this.onResetCount;
+        setTimeout(
+            function() {
+                rest();
+        }, 500);
     }
 
     changeSign(){
@@ -89,8 +102,9 @@ class CustomInputNumber extends Component {
         const decimalType = this.getDecimalType(this.state.divisor);
         const fixedValue = this.state.divisor ===1? 0 :2
         let result = Number.parseFloat((this.state.value * this.state.cant).toFixed(2));
-        const iconSign = this.state.sign <0 ? "caret-down": "caret-up"
-        const iconSignButton = this.state.sign <0 ? "danger": "primary"
+        const iconSign = this.state.sign <0 ? "caret-down": "caret-up";
+        const badgetColor = this.state.sign <0 ? "#E57060": "#6DC168";
+        const iconSignButton = this.state.sign <0 ? "danger": "primary";
         const numericButtons = [1,2,5,10,20,50,100,500];
         let extraData = ""
         if(!this.state.iva){
@@ -110,7 +124,9 @@ class CustomInputNumber extends Component {
                         <Col>
                             <div style={{fontSize:30, color:"#1B56AB", marginBottom:0}}>
                                 <p style={{marginBottom:0, textAlign:'centers'}}>
-                                <b style={{fontSize:50}}>$ {this.state.value}</b> 
+                                <Badge count={this.state.lastValueAdded} style={{backgroundColor:badgetColor}}>
+                                    <b style={{fontSize:50}}>$ {this.state.value}</b> 
+                                </Badge>
                                 (x{this.state.cant}) =</p> 
                                 <p style={{marginBottom:0, textAlign:'center'}}>${result} <i style={{fontSize:20, color:'#B65F5F'}}>{extraData}</i></p>
                             </div>
