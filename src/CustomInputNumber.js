@@ -33,8 +33,10 @@ class CustomInputNumber extends Component {
         const inputAdd = Number.parseFloat((plus  / this.state.divisor).toFixed(2));
         const actual = Number.parseFloat(this.state.value.toFixed(2));
         const toADd = Number.parseFloat((inputAdd * this.state.sign).toFixed(2));
+
+        const value = Number.parseFloat((actual + toADd).toFixed(2));
         this.setState({
-            value : Number.parseFloat((actual + toADd).toFixed(2)),
+            value : value<0 ?0 :value,
             lastValueAdded: plus
         })
         const rest = this.onResetCount;
@@ -103,15 +105,15 @@ class CustomInputNumber extends Component {
         const fixedValue = this.state.divisor ===1? 0 :2
         let result = Number.parseFloat((this.state.value * this.state.cant).toFixed(2));
         const iconSign = this.state.sign <0 ? "caret-down": "caret-up";
-        const badgetColor = this.state.sign <0 ? "#E57060": "#6DC168";
+        const badgetColor = this.state.sign <0 ? "red": "green";
         const iconSignButton = this.state.sign <0 ? "danger": "primary";
         const numericButtons = [1,2,5,10,20,50,100,500];
         let extraData = ""
+        result = result<0? 0 : result;
         if(!this.state.iva){
             extraData = "(+$" + (result*0.21).toFixed(2)+")";
             result = Number.parseFloat((result*1.21).toFixed(2));   
-        }
-
+        }        
         return (<Drawer
                     title={<p style={{fontSize:20}}>Añadiendo a carrito: <b>{this.props.description}</b></p>}
                     placement='bottom'
@@ -124,7 +126,7 @@ class CustomInputNumber extends Component {
                         <Col>
                             <div style={{fontSize:30, color:"#1B56AB", marginBottom:0}}>
                                 <p style={{marginBottom:0, textAlign:'centers'}}>
-                                <Badge count={this.state.lastValueAdded} style={{backgroundColor:badgetColor}}>
+                                <Badge count={this.state.lastValueAdded} style={{backgroundColor:badgetColor}} overflowCount={600}>
                                     <b style={{fontSize:50}}>$ {this.state.value}</b> 
                                 </Badge>
                                 (x{this.state.cant}) =</p> 
