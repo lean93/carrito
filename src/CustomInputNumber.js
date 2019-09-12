@@ -6,8 +6,8 @@ class CustomInputNumber extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            value:0,
-            cant:1,
+            value: (props.data ||{}).value || 0,
+            cant: (props.data|| {}).cant || 1,
             sign:1,
             divisor:1,
             iva:true,
@@ -99,10 +99,22 @@ class CustomInputNumber extends Component {
             iva: e.target.checked
         });
     }
+      
+    componentWillReceiveProps(oldProps,newProps){
+        const data = oldProps.data || {}
+        if(data.unit){
+            this.setState({
+                description: data.description,
+                cant: data.unit,
+                value: data.value
+            })
+        }
+    }
     render() {
         const buttonType = this.getNumberType(this.state.sign);
         const decimalType = this.getDecimalType(this.state.divisor);
         const fixedValue = this.state.divisor ===1? 0 :2
+
         let result = Number.parseFloat((this.state.value * this.state.cant).toFixed(2));
         const iconSign = this.state.sign <0 ? "caret-down": "caret-up";
         const badgetColor = this.state.sign <0 ? "red": "green";
@@ -114,8 +126,10 @@ class CustomInputNumber extends Component {
             extraData = "(+$" + (result*0.21).toFixed(2)+")";
             result = Number.parseFloat((result*1.21).toFixed(2));   
         }        
+        const message= this.props.edit? "Editando Item" : "Añadiendo a carrito"
+        const messageButton = this.props.edit? "Guardar Cambios" : "Agregar Al carrito";
         return (<Drawer
-                    title={<p style={{fontSize:20}}>Añadiendo a carrito: <b>{this.props.description}</b></p>}
+                    title={<p style={{fontSize:20}}>{message}: <b>{this.props.description}</b></p>}
                     placement='bottom'
                     height="600"
                     closable={false}
@@ -181,8 +195,11 @@ class CustomInputNumber extends Component {
 
                     <Row type="flex" align='middle' justify='center' gutter={24}>
                         <Col sm={24}>
-                        <Button style={{ width: '100dv' }} icon='shopping-cart' type='primary' onClick={this.onAddToChart}>
-                            Agregar Al carrito
+                        <Button style={{ width: '100dv' }} icon='close' type='default' onClick={this.props.onClose}>
+                            Cancelar
+                        </Button>
+                        <Button style={{ width: '100dv', marginLeft:20 }} icon='shopping-cart' type='primary' onClick={this.onAddToChart}>
+                            {messageButton}
                         </Button>
                         </Col>
                     </Row>

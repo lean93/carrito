@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Form, Icon, Input, Button, InputNumber, Table, message, Popconfirm, Row, Col, Layout } from 'antd';
-import NumericInput from './NumericInput';
+import { Form, Icon, Input, Button, Table, message, Popconfirm, Row, Col, Layout } from 'antd';
 import { Collapse } from 'antd';
 import CustomInputNumber from './CustomInputNumber';
 
@@ -22,9 +21,9 @@ class App extends Component {
       wihsList: JSON.parse(localStorage.getItem('makro-wish-list')) || [],
       editionMode: false,
       showAddFromWohsiList: false,
+      showAddFromChart:false,
+      item:{}
     }
-    this.onChangeUnit = this.onChangeUnit.bind(this);
-    this.onChangeValue = this.onChangeValue.bind(this);
     this.onAddElement = this.onAddElement.bind(this);
     this.onChangeDescription = this.onChangeDescription.bind(this);
     this.onDelete = this.onDelete.bind(this);
@@ -35,14 +34,15 @@ class App extends Component {
     this.openModal = this.openModal.bind(this);
     this.addElementFromWishList = this.addElementFromWishList.bind(this);
     this.onSubmitWishList = this.onSubmitWishList.bind(this);
+    this.openModalChart = this.openModalChart.bind(this);
   }
 
   onEditItem(item) {
     this.setState({
       editionMode: true,
       description: item.description,
-      value: item.value,
-      unit: item.unit
+      showAddFromChart:true,
+      item: item
     })
   }
 
@@ -53,13 +53,15 @@ class App extends Component {
     })
   }
 
+  openModalChart() {
+    this.setState({
+      showAddFromChart: true,
+    })
+  }
+
   onAddElement(data) {
     message.destroy();
-    const newItem = data.description? data : {
-      description: this.state.description,
-      unit: this.state.unit,
-      value: this.state.value
-    }
+    const newItem = data;
     if (this.state.cartList.some(item => item.description === newItem.description) && !this.state.editionMode) {
       message.error(<React.Fragment>Ya existe el item: <b>{newItem.description}</b>. Editelo o elimine el mismo</React.Fragment>, 2);
       return true;
@@ -103,16 +105,6 @@ class App extends Component {
     this.hideModal();
   }
 
-  onChangeUnit(e) {
-    this.setState({
-      unit: e
-    })
-  }
-  onChangeValue(e) {
-    this.setState({
-      value: e
-    })
-  }
   onChangeDescription(e) {
     this.setState({
       description: e.target.value
@@ -139,8 +131,8 @@ class App extends Component {
     });
     localStorage.setItem('makro-wish-list', JSON.stringify(newData));
     message.success(<React.Fragment>Item: <b>{data.description}</b> eliminado correctamente de la lista de deseados.</React.Fragment>, 3);
-
   }
+
   onChangeWishDescription(e) {
     this.setState({
       wishDescription: e.target.value
@@ -165,9 +157,12 @@ class App extends Component {
   hideModal() {
     this.setState({
       showAddFromWohsiList: false,
+      showAddFromChart:false,
       wishDescription: undefined,
       unit: undefined,
-      value: undefined
+      value: undefined,
+      description:undefined,
+      editionMode:false
     })
   }
 
@@ -176,17 +171,22 @@ class App extends Component {
     let mensaje = "Todavia no ha cargado nigun valor";
     if (this.state.cartList.length) {
       const toal = this.state.cartList.map(item => item.unit * item.value).reduce((firstValue, secondValue) => firstValue + secondValue);
-      mensaje = "Gasto Total: $" + toal;
+        mensaje = "Gasto Total: $" + toal.toFixed(2);      
+      ;
     }
 
     const buttonMsg = this.state.editionMode ? "Guardar Cambios" : "Agregar";
     const buttonIcon = this.state.editionMode ? "save" : "shopping-cart";
-    const disableButton = !this.state.description || !this.state.unit || !this.state.value
+    const disableButton = !this.state.description;
     const disableWishButton = !this.state.wishDescription;
     return (
       <div className="App" style={{ backgroundColor: '#393939' }}>
         <CustomInputNumber visible={this.state.showAddFromWohsiList} onClose={this.hideModal} description={this.state.wishDescription} 
-                        onSubmit={this.onSubmitWishList}/>
+                        onSubmit={this.onSubmitWishList} />
+
+         <CustomInputNumber visible={this.state.showAddFromChart} onClose={this.hideModal} description={this.state.description} 
+                        onSubmit={this.onSubmitWishList} data={this.state.item} edit={this.state.editionMode}/>
+
         <Layout style={{ backgroundColor: '#393939', display:'flex', flexDirection:'column', width:'100%'}}>
           <Content style={{ backgroundColor: '#393939', flex:'1 0 auto'}}>
             <Collapse accordion>
@@ -206,29 +206,7 @@ class App extends Component {
                     </Col>
                     <Col sm={6}>
                       <Form.Item>
-                        <NumericInput value={this.state.unit}
-                          onChange={this.onChangeUnit}
-                          prefix={<Icon type="number" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                          placeholder="Cantidad"
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col sm={6}>
-                      <Form.Item>
-                        <InputNumber
-                          defaultValue={this.state.value}
-                          value={this.state.value}
-                          placeholder="Precio"
-                          style={{ width: 190 }}
-                          formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                          parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                          onChange={this.onChangeValue}
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col sm={6}>
-                      <Form.Item>
-                        <Button type="primary" icon={buttonIcon} onClick={this.onAddElement} disabled={disableButton}>
+                        <Button type="primary" icon={buttonIcon} onClick={this.openModalChart} disabled={disableButton}>
                           {buttonMsg}
                         </Button>
                       </Form.Item>
@@ -244,7 +222,7 @@ class App extends Component {
                   <Column align='center' key='unit' title='Cantidad' dataIndex='unit' />
                   <Column align='center' key='value' title='Precio Unitario' dataIndex='value' />
                   <Column align='center' key='totalUnit' title='Total Item' render={data => {
-                    return data.unit * data.value
+                    return   Number.parseFloat((data.unit * data.value).toFixed(2));      
                   }} />
                   <Column align='center' key='action' title='Acciones' render={data => {
                     return (<React.Fragment>
@@ -257,6 +235,7 @@ class App extends Component {
                   }} />
                 </Table>
               </Panel>
+              
               <Panel header={<React.Fragment><Icon type="ordered-list" />   Lista de Compra</React.Fragment>}>
                 <Row type="flex" align='middle' justify='center'>
                   <Form layout="inline">
