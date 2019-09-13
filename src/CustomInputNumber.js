@@ -43,7 +43,7 @@ class CustomInputNumber extends Component {
         setTimeout(
             function() {
                 rest();
-        }, 300);
+        }, 200);
     }
 
     changeSign(){
@@ -119,7 +119,7 @@ class CustomInputNumber extends Component {
         const iconSign = this.state.sign <0 ? "caret-down": "caret-up";
         const badgetColor = this.state.sign <0 ? "red": "green";
         const iconSignButton = this.state.sign <0 ? "danger": "primary";
-        const numericButtons = [1,2,5,10,20,50,100,500];
+        const numericButtons = [500,100,50,20,10,5,2,1];
         let extraData = ""
         result = result<0? 0 : result;
         if(!this.state.iva){
@@ -128,6 +128,8 @@ class CustomInputNumber extends Component {
         }        
         const message= this.props.edit? "Editando Item" : "Añadiendo a carrito"
         const messageButton = this.props.edit? "Guardar Cambios" : "Agregar Al carrito";
+
+        const badgetVal = this.state.lastValueAdded===0?0: this.state.lastValueAdded +1;
         return (<Drawer
                     title={<p style={{fontSize:20}}>{message}: <b>{this.props.description}</b></p>}
                     placement='bottom'
@@ -140,7 +142,7 @@ class CustomInputNumber extends Component {
                         <Col>
                             <div style={{fontSize:30, color:"#1B56AB", marginBottom:0}}>
                                 <p style={{marginBottom:0, textAlign:'centers'}}>
-                                <Badge count={this.state.lastValueAdded} style={{backgroundColor:badgetColor}} overflowCount={600}>
+                                <Badge count={badgetVal} style={{backgroundColor:badgetColor}} overflowCount={this.state.lastValueAdded}> 
                                     <b style={{fontSize:50}}>$ {this.state.value}</b> 
                                 </Badge>
                                 (x{this.state.cant}) =</p> 
