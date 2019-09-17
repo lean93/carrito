@@ -167,7 +167,7 @@ class CustomInputNumber extends Component {
                     </Row>
                     <Row type="flex" align='middle' justify='center' gutter={24} style={{marginBottom:20}}>
                         <Col sm={8}>
-                        <Button style={{ width: 100,  }} type={iconSignButton} onClick={this.changeSign} size='large'>
+                        <Button style={{ width: 100 }} type={iconSignButton} onClick={this.changeSign} shape="round" size='large'>
                             <Icon type={iconSign} style={{margin:0}}/> <Icon type="dollar" style={{margin:0}} />
                         </Button>
                         </Col>
