@@ -1,15 +1,51 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Carrito de Compras",
+  "name": "Aplicacion para llevar control de gastos en el Super",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "carrito_ico.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "carrito_ico.png",
+      "sizes": "120x120",
+      "type": "image/png"
+    },
+    {
+      "src": "carrito_ico.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "carrito_ico.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "carrito_ico.png",
+      "sizes": "167x167",
+      "type": "image/png"
+    },
+    {
+      "src": "carrito_ico.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "carrito_ico.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "carrito_ico.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
   "start_url": ".",
   "display": "standalone",
+  "orientation": "portrait",
   "theme_color": "#000000",
   "background_color": "#ffffff"
 }

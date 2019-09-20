@@ -4,6 +4,7 @@ import { Form, Icon, Input, Button, Table, message, Popconfirm, Row, Col, Layout
 import { Collapse } from 'antd';
 import CustomInputNumber from './CustomInputNumber';
 
+
 const { Footer, Content } = Layout;
 const { Panel } = Collapse;
 
