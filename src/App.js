@@ -194,7 +194,7 @@ class App extends Component {
               <Panel header={<React.Fragment><Icon type="shopping-cart" /> <b>Carrito</b></React.Fragment>}>
                 <Row type="flex" align='middle' justify='center'>
                   <Form layout="inline">
-                    <Col sm={6}>
+                    <Col sm={14}>
                       <Form.Item>
                         <Input
                           prefix={<Icon type="barcode" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -205,7 +205,7 @@ class App extends Component {
                         />
                       </Form.Item>
                     </Col>
-                    <Col sm={6}>
+                    <Col sm={10}>
                       <Form.Item>
                         <Button type="primary" icon={buttonIcon} onClick={this.openModalChart} disabled={disableButton}>
                           {buttonMsg}
@@ -218,7 +218,7 @@ class App extends Component {
                 <b> {mensaje}</b>
                 <br />
                 <br />
-                <Table dataSource={this.state.cartList} pagination={true} size='small' bordered={true} rowKey="description">
+                <Table dataSource={this.state.cartList} pagination={true} size='small' bordered={true} rowKey="description" scroll={{x:'max-content'}}>
                   <Column align='center' key='description' title='Descripcion' dataIndex='description' />
                   <Column align='center' key='unit' title='Cantidad' dataIndex='unit' />
                   <Column align='center' key='value' title='Precio Unitario' dataIndex='value' />
@@ -240,7 +240,7 @@ class App extends Component {
               <Panel header={<React.Fragment><Icon type="ordered-list" />   Lista de Compra</React.Fragment>}>
                 <Row type="flex" align='middle' justify='center'>
                   <Form layout="inline">
-                    <Col sm={14}>
+                  <Col sm={14}>
                       <Form.Item>
                         <Input
                           prefix={<Icon type="barcode" style={{ color: 'rgba(0,0,0,.25)' }} />}

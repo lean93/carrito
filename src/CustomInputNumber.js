@@ -11,7 +11,8 @@ class CustomInputNumber extends Component {
             sign:1,
             divisor:1,
             iva:true,
-            lastValueAdded:0
+            lastValueAdded:0,
+            screenOrientation: window.matchMedia("(orientation: portrait)").matches?'portrait':'landscape'
         }
         this.onAddValue = this.onAddValue.bind(this);
         this.onChangeCant =this.onChangeCant.bind(this);
@@ -110,6 +111,24 @@ class CustomInputNumber extends Component {
             })
         }
     }
+    setScreenOrientation = () => {
+        if (window.matchMedia("(orientation: portrait)").matches) {
+          this.setState({
+            screenOrientation: 'portrait'
+          });
+        }
+    
+        if (window.matchMedia("(orientation: landscape)").matches) {
+          this.setState({
+            screenOrientation: 'landscape'
+          });
+        }
+      }
+    
+      componentDidMount(){
+        window.addEventListener('resize', this.setScreenOrientation);
+      }
+
     render() {
         const buttonType = this.getNumberType(this.state.sign);
         const decimalType = this.getDecimalType(this.state.divisor);
@@ -130,10 +149,13 @@ class CustomInputNumber extends Component {
         const messageButton = this.props.edit? "Guardar Cambios" : "Agregar Al carrito";
 
         const badgetVal = this.state.lastValueAdded===0?0: this.state.lastValueAdded +1;
+        const placementDrawer = this.state.screenOrientation === "landscape" ? 'right': 'bottom'
+        const widthDrawer = this.state.screenOrientation === "landscape" ? 350: '80dv'
         return (<Drawer
                     title={<p style={{fontSize:20}}>{message}: <b>{this.props.description}</b></p>}
-                    placement='bottom'
-                    height="600"
+                    placement={placementDrawer}
+                    width={widthDrawer}
+                    height="80dv"
                     closable={false}
                     onClose={this.props.onClose}
                     visible={this.props.visible}>
