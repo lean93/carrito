@@ -12,7 +12,7 @@ class CustomInputNumber extends Component {
             divisor:1,
             iva:true,
             lastValueAdded:0,
-            screenOrientation: window.matchMedia("(orientation: portrait)").matches?'portrait':'landscape'
+            screenOrientation: window.matchMedia("(orientation: portrait)").matches?'portrait':'landscapes'
         }
         this.onAddValue = this.onAddValue.bind(this);
         this.onChangeCant =this.onChangeCant.bind(this);
