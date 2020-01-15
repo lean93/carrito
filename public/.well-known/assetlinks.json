@@ -1,5 +1,5 @@
 [{
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target" : { "namespace": "android_app", "package_name": "com.netlify.carrito-makro",
-                 "sha256_cert_fingerprints": ["C1:CA:FA:F6:08:02:F8:7B:4E:13:81:65:40:87:65:D2:16:AB:50:D5:4A:B3:EE:04:A5:2C:C5:ED:D2:04:DB:011q"] }
+                 "sha256_cert_fingerprints": ["C1:CA:FA:F6:08:02:F8:7B:4E:13:81:65:40:87:65:D2:16:AB:50:D5:4A:B3:EE:04:A5:2C:C5:ED:D2:04:DB:011"] }
 }]
