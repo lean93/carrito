@@ -3,6 +3,7 @@ import './App.css';
 import { Form, Icon, Input, Button, Table, message, Popconfirm, Row, Col, Layout } from 'antd';
 import { Collapse } from 'antd';
 import CustomInputNumber from './CustomInputNumber';
+import ComprasAnteriores from './componets/ComprasAnteriores';
 
 
 const { Footer, Content } = Layout;
@@ -20,6 +21,7 @@ class App extends Component {
       value: null,
       cartList: JSON.parse(localStorage.getItem('makro-cart-items')) || [],
       wihsList: JSON.parse(localStorage.getItem('makro-wish-list')) || [],
+      shoppingList: JSON.parse(localStorage.getItem('makro-shopping-list')) || [],
       editionMode: false,
       showAddFromWohsiList: false,
       showAddFromChart:false,
@@ -36,6 +38,7 @@ class App extends Component {
     this.addElementFromWishList = this.addElementFromWishList.bind(this);
     this.onSubmitWishList = this.onSubmitWishList.bind(this);
     this.openModalChart = this.openModalChart.bind(this);
+    this.shopCartList = this.shopCartList.bind(this);
   }
 
   onEditItem(item) {
@@ -166,6 +169,25 @@ class App extends Component {
       editionMode:false
     })
   }
+  shopCartList(){
+    let newShopItem={};
+    newShopItem.id=Math.random().toString(36).substr(2, 9);
+    newShopItem.shopDate = new Date().toLocaleString();
+    newShopItem.itemes = this.state.cartList.slice();
+    newShopItem.total = this.state.cartList.map(item => item.unit * item.value).reduce((firstValue, secondValue) => firstValue + secondValue).toFixed(2);
+
+
+    let newShop = this.state.shoppingList.slice();
+    newShop.push(newShopItem);
+    this.setState({
+      shoppingList: newShop,
+      cartList:[]
+    })
+    localStorage.setItem('makro-shopping-list', JSON.stringify(newShop));
+    localStorage.setItem('makro-cart-items', JSON.stringify([]));
+    message.success("Compra guardada correctamente", 3);
+
+  }
 
   render() {
     message.config({top: 600})
@@ -179,6 +201,7 @@ class App extends Component {
     const buttonMsg = this.state.editionMode ? "Guardar Cambios" : "Agregar";
     const buttonIcon = this.state.editionMode ? "save" : "shopping-cart";
     const disableButton = !this.state.description;
+    const disableButtonShop = !this.state.cartList.length;
     const disableWishButton = !this.state.wishDescription;
     return (
       <div className="App" style={{ backgroundColor: '#393939' }}>
@@ -205,11 +228,22 @@ class App extends Component {
                         />
                       </Form.Item>
                     </Col>
-                    <Col sm={10}>
+                    <Col sm={6}>
                       <Form.Item>
                         <Button type="primary" icon={buttonIcon} onClick={this.openModalChart} disabled={disableButton}>
                           {buttonMsg}
                         </Button>
+                      </Form.Item>
+                    </Col>
+                    <Col sm={4}>
+                      <Form.Item>
+                          <Popconfirm placement="top" title={"Esta seguro de finalizar la compra?"} 
+                                    onConfirm={this.shopCartList} okText="SI" cancelText="NO" okButtonProps={{disabled:disableButtonShop}}>
+                              <Button type="dashed" shape="round" icon={"save"} disabled={disableButtonShop}
+                                  style={{marginLeft:20}}>
+                                  Finalizar Compra
+                              </Button>
+                          </Popconfirm>
                       </Form.Item>
                     </Col>
                   </Form>
@@ -274,6 +308,9 @@ class App extends Component {
                     );
                   }} />
                 </Table>
+              </Panel>
+              <Panel header={<React.Fragment><Icon type="shopping" /> Compras Anteriores</React.Fragment>}>
+                  <ComprasAnteriores data={this.state.shoppingList}/>
               </Panel>
             </Collapse>
           </Content>
